@@ -32,7 +32,6 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import javax.inject.Inject;
@@ -76,7 +75,7 @@ class DevToolsOverlay extends Overlay
 	private static final Color GREEN = new Color(0, 200, 83);
 	private static final Color ORANGE = new Color(255, 109, 0);
 	private static final Color YELLOW = new Color(255, 214, 0);
-	private static final Color CYAN = new Color(0, 184, 212);
+	private static final Color CYAN = new Color(0, 0, 0, 0);
 	private static final Color BLUE = new Color(41, 98, 255);
 	private static final Color DEEP_PURPLE = new Color(98, 0, 234);
 	private static final Color PURPLE = new Color(170, 0, 255);
@@ -153,7 +152,6 @@ class DevToolsOverlay extends Overlay
 
 		String text = local.getName() + " (A: " + local.getAnimation() + ") (G: " + local.getGraphic() + ")";
 		OverlayUtil.renderActorOverlay(graphics, local, text, CYAN);
-		renderPlayerWireframe(graphics, local, CYAN);
 	}
 
 	private void renderNpcs(Graphics2D graphics)
@@ -287,16 +285,16 @@ class DevToolsOverlay extends Overlay
 
 					// Draw a polygon around the convex hull
 					// of the model vertices
-					Shape p = gameObject.getConvexHull();
+					Polygon p = gameObject.getConvexHull();
 					if (p != null)
 					{
-						graphics.draw(p);
+						graphics.drawPolygon(p);
 					}
 				}
 			}
 		}
 	}
-
+	
 	private void renderGroundObject(Graphics2D graphics, Tile tile, Player player)
 	{
 		GroundObject groundObject = tile.getGroundObject();
@@ -331,16 +329,16 @@ class DevToolsOverlay extends Overlay
 				OverlayUtil.renderTileOverlay(graphics, decorObject, "ID: " + decorObject.getId(), DEEP_PURPLE);
 			}
 
-			Shape p = decorObject.getConvexHull();
+			Polygon p = decorObject.getConvexHull();
 			if (p != null)
 			{
-				graphics.draw(p);
+				graphics.drawPolygon(p);
 			}
 
 			p = decorObject.getConvexHull2();
 			if (p != null)
 			{
-				graphics.draw(p);
+				graphics.drawPolygon(p);
 			}
 		}
 	}
@@ -414,23 +412,6 @@ class DevToolsOverlay extends Overlay
 			{
 				OverlayUtil.renderTextLocation(graphics, textLocation, infoString, Color.WHITE);
 			}
-		}
-	}
-
-	private void renderPlayerWireframe(Graphics2D graphics, Player player, Color color)
-	{
-		Polygon[] polys = player.getPolygons();
-
-		if (polys == null)
-		{
-			return;
-		}
-
-		graphics.setColor(color);
-
-		for (Polygon p : polys)
-		{
-			graphics.drawPolygon(p);
 		}
 	}
 
